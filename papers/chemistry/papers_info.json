@@ -1,0 +1,18 @@
+{
+  "2411.07228v2": {
+    "title": "ChemToolAgent: The Impact of Tools on Language Agents for Chemistry Problem Solving",
+    "authors": [
+      "Botao Yu",
+      "Frazier N. Baker",
+      "Ziru Chen",
+      "Garrett Herb",
+      "Boyu Gou",
+      "Daniel Adu-Ampratwum",
+      "Xia Ning",
+      "Huan Sun"
+    ],
+    "summary": "To enhance large language models (LLMs) for chemistry problem solving,\nseveral LLM-based agents augmented with tools have been proposed, such as\nChemCrow and Coscientist. However, their evaluations are narrow in scope,\nleaving a large gap in understanding the benefits of tools across diverse\nchemistry tasks. To bridge this gap, we develop ChemToolAgent, an enhanced\nchemistry agent over ChemCrow, and conduct a comprehensive evaluation of its\nperformance on both specialized chemistry tasks and general chemistry\nquestions. Surprisingly, ChemToolAgent does not consistently outperform its\nbase LLMs without tools. Our error analysis with a chemistry expert suggests\nthat: For specialized chemistry tasks, such as synthesis prediction, we should\naugment agents with specialized tools; however, for general chemistry questions\nlike those in exams, agents' ability to reason correctly with chemistry\nknowledge matters more, and tool augmentation does not always help.",
+    "pdf_url": "http://arxiv.org/pdf/2411.07228v2",
+    "published": "2024-11-11"
+  }
+}
