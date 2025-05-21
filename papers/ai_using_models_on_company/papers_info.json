@@ -1,0 +1,64 @@
+{
+  "2312.00043v1": {
+    "title": "Who is leading in AI? An analysis of industry AI research",
+    "authors": [
+      "Ben Cottier",
+      "Tamay Besiroglu",
+      "David Owen"
+    ],
+    "summary": "AI research is increasingly industry-driven, making it crucial to understand\ncompany contributions to this field. We compare leading AI companies by\nresearch publications, citations, size of training runs, and contributions to\nalgorithmic innovations. Our analysis reveals the substantial role played by\nGoogle, OpenAI and Meta. We find that these three companies have been\nresponsible for some of the largest training runs, developed a large fraction\nof the algorithmic innovations that underpin large language models, and led in\nvarious metrics of citation impact. In contrast, leading Chinese companies such\nas Tencent and Baidu had a lower impact on many of these metrics compared to US\ncounterparts. We observe many industry labs are pursuing large training runs,\nand that training runs from relative newcomers -- such as OpenAI and Anthropic\n-- have matched or surpassed those of long-standing incumbents such as Google.\nThe data reveals a diverse ecosystem of companies steering AI progress, though\nUS labs such as Google, OpenAI and Meta lead across critical metrics.",
+    "pdf_url": "http://arxiv.org/pdf/2312.00043v1",
+    "published": "2023-11-24"
+  },
+  "2203.08465v1": {
+    "title": "Building AI Innovation Labs together with Companies",
+    "authors": [
+      "Jens Heidrich",
+      "Andreas Jedlitschka",
+      "Adam Trendowicz",
+      "Anna Maria Vollmer"
+    ],
+    "summary": "In the future, most companies will be confronted with the topic of Artificial\nIntelligence (AI) and will have to decide on their strategy in this regards.\nCurrently, a lot of companies are thinking about whether and how AI and the\nusage of data will impact their business model and what potential use cases\ncould look like. One of the biggest challenges lies in coming up with\ninnovative solution ideas with a clear business value. This requires business\ncompetencies on the one hand and technical competencies in AI and data\nanalytics on the other hand. In this article, we present the concept of AI\ninnovation labs and demonstrate a comprehensive framework, from coming up with\nthe right ideas to incrementally implementing and evaluating them regarding\ntheir business value and their feasibility based on a company's capabilities.\nThe concept is the result of nine years of working on data-driven innovations\nwith companies from various domains. Furthermore, we share some lessons learned\nfrom its practical applications. Even though a lot of technical publications\ncan be found in the literature regarding the development of AI models and many\nconsultancy companies provide corresponding services for building AI\ninnovations, we found very few publications sharing details about what an\nend-to-end framework could look like.",
+    "pdf_url": "http://arxiv.org/pdf/2203.08465v1",
+    "published": "2022-03-16"
+  },
+  "2408.12047v1": {
+    "title": "Do Responsible AI Artifacts Advance Stakeholder Goals? Four Key Barriers Perceived by Legal and Civil Stakeholders",
+    "authors": [
+      "Anna Kawakami",
+      "Daricia Wilkinson",
+      "Alexandra Chouldechova"
+    ],
+    "summary": "The responsible AI (RAI) community has introduced numerous processes and\nartifacts (e.g., Model Cards, Transparency Notes, Data Cards) to facilitate\ntransparency and support the governance of AI systems. While originally\ndesigned to scaffold and document AI development processes in technology\ncompanies, these artifacts are becoming central components of regulatory\ncompliance under recent regulations such as the EU AI Act. Much prior work has\nexplored the design of new RAI artifacts or their use by practitioners within\ntechnology companies. However, as RAI artifacts begin to play key roles in\nenabling external oversight, it becomes critical to understand how\nstakeholders--particularly those situated outside of technology companies who\ngovern and audit industry AI deployments--perceive the efficacy of RAI\nartifacts. In this study, we conduct semi-structured interviews and design\nactivities with 19 government, legal, and civil society stakeholders who inform\npolicy and advocacy around responsible AI efforts. While participants believe\nthat RAI artifacts are a valuable contribution to the broader AI governance\necosystem, many are concerned about their potential unintended, longer-term\nimpacts on actors outside of technology companies (e.g., downstream end-users,\npolicymakers, civil society stakeholders). We organize these beliefs into four\nbarriers that help explain how RAI artifacts may (inadvertently) reconfigure\npower relations across civil society, government, and industry, impeding civil\nsociety and legal stakeholders' ability to protect downstream end-users from\npotential AI harms. Participants envision how structural changes, along with\nchanges in how RAI artifacts are designed, used, and governed, could help\nredirect the role of artifacts to support more collaborative and proactive\nexternal oversight of AI systems. We discuss research and policy implications\nfor RAI artifacts.",
+    "pdf_url": "http://arxiv.org/pdf/2408.12047v1",
+    "published": "2024-08-22"
+  },
+  "2402.12417v1": {
+    "title": "Predicting trucking accidents with truck drivers 'safety climate perception across companies: A transfer learning approach",
+    "authors": [
+      "Kailai Sun",
+      "Tianxiang Lan",
+      "Say Hong Kam",
+      "Yang Miang Goh",
+      "Yueng-Hsiang Huang"
+    ],
+    "summary": "There is a rising interest in using artificial intelligence (AI)-powered\nsafety analytics to predict accidents in the trucking industry. Companies may\nface the practical challenge, however, of not having enough data to develop\ngood safety analytics models. Although pretrained models may offer a solution\nfor such companies, existing safety research using transfer learning has mostly\nfocused on computer vision and natural language processing, rather than\naccident analytics. To fill the above gap, we propose a pretrain-then-fine-tune\ntransfer learning approach to help any company leverage other companies' data\nto develop AI models for a more accurate prediction of accident risk. We also\ndevelop SafeNet, a deep neural network algorithm for classification tasks\nsuitable for accident prediction. Using the safety climate survey data from\nseven trucking companies with different data sizes, we show that our proposed\napproach results in better model performance compared to training the model\nfrom scratch using only the target company's data. We also show that for the\ntransfer learning model to be effective, the pretrained model should be\ndeveloped with larger datasets from diverse sources. The trucking industry may,\nthus, consider pooling safety analytics data from a wide range of companies to\ndevelop pretrained models and share them within the industry for better\nknowledge and resource transfer. The above contributions point to the promise\nof advanced safety analytics to make the industry safer and more sustainable.",
+    "pdf_url": "http://arxiv.org/pdf/2402.12417v1",
+    "published": "2024-02-19"
+  },
+  "2101.12701v1": {
+    "title": "Time for AI (Ethics) Maturity Model Is Now",
+    "authors": [
+      "Ville Vakkuri",
+      "Marianna Jantunen",
+      "Erika Halme",
+      "Kai-Kristian Kemell",
+      "Anh Nguyen-Duc",
+      "Tommi Mikkonen",
+      "Pekka Abrahamsson"
+    ],
+    "summary": "There appears to be a common agreement that ethical concerns are of high\nimportance when it comes to systems equipped with some sort of Artificial\nIntelligence (AI). Demands for ethical AI are declared from all directions. As\na response, in recent years, public bodies, governments, and universities have\nrushed in to provide a set of principles to be considered when AI based systems\nare designed and used. We have learned, however, that high-level principles do\nnot turn easily into actionable advice for practitioners. Hence, also companies\nare publishing their own ethical guidelines to guide their AI development. This\npaper argues that AI software is still software and needs to be approached from\nthe software development perspective. The software engineering paradigm has\nintroduced maturity model thinking, which provides a roadmap for companies to\nimprove their performance from the selected viewpoints known as the key\ncapabilities. We want to voice out a call for action for the development of a\nmaturity model for AI software. We wish to discuss whether the focus should be\non AI ethics or, more broadly, the quality of an AI system, called a maturity\nmodel for the development of AI systems.",
+    "pdf_url": "http://arxiv.org/pdf/2101.12701v1",
+    "published": "2021-01-29"
+  }
+}

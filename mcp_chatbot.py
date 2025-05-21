@@ -1,13 +1,14 @@
-from dotenv import load_dotenv
+import os
+import logging
 from openai import OpenAI
-from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+from asyncio import gather, sleep
 from contextlib import AsyncExitStack
 import json
+from dotenv import load_dotenv
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
 import asyncio
 import nest_asyncio
-import logging
-import os
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, 
@@ -21,8 +22,26 @@ load_dotenv()
 class MCP_ChatBot:
     def __init__(self):
         self.exit_stack = AsyncExitStack()
-        # Initialize OpenAI client
-        self.openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        
+        # Initialize OpenAI client with proper error handling
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            logger.warning("OPENAI_API_KEY not found in environment variables")
+        
+        try:
+            # Try initializing with the new API (OpenAI 1.x)
+            self.openai = OpenAI(api_key=api_key)
+        except TypeError as e:
+            if "unexpected keyword argument 'proxies'" in str(e):
+                # Fallback for older versions or specific configuration issues
+                logger.warning("Falling back to alternative OpenAI client initialization")
+                import openai as openai_module
+                openai_module.api_key = api_key
+                self.openai = openai_module
+            else:
+                # Re-raise if it's a different TypeError
+                raise
+        
         # Tools list required for OpenAI API
         self.available_tools = []
         # Prompts list for quick display 
@@ -190,25 +209,61 @@ class MCP_ChatBot:
         while True:
             logger.info("Sending request to OpenAI")
             try:
-                response = self.openai.chat.completions.create(
-                    model="gpt-4o",
-                    messages=self.message_history,
-                    tools=self.available_tools if self.available_tools else None,
-                    tool_choice="auto"
-                )
-                
-                # Get the message from the response
-                message = response.choices[0].message
-                
-                # Add assistant message to history
-                self.message_history.append(message.model_dump())
+                # Check if we're using the new OpenAI client or the fallback
+                if hasattr(self.openai, 'chat') and hasattr(self.openai.chat, 'completions'):
+                    # New OpenAI client (1.x)
+                    response = self.openai.chat.completions.create(
+                        model="gpt-4o",
+                        messages=self.message_history,
+                        tools=self.available_tools if self.available_tools else None,
+                        tool_choice="auto"
+                    )
+                    message = response.choices[0].message
+                    # Add assistant message to history
+                    self.message_history.append(message.model_dump())
+                else:
+                    # Fallback to older OpenAI client
+                    response = self.openai.ChatCompletion.create(
+                        model="gpt-4o",
+                        messages=self.message_history,
+                        functions=[tool["function"] for tool in self.available_tools] if self.available_tools else None,
+                        function_call="auto"
+                    )
+                    message = response.choices[0].message
+                    # Add assistant message to history
+                    self.message_history.append(dict(message))
                 
                 # Check if the model wants to call a tool
+                has_tool_calls = False
+                tool_calls = []
+                
+                # Handle both new and old API formats
                 if hasattr(message, 'tool_calls') and message.tool_calls:
+                    has_tool_calls = True
+                    tool_calls = message.tool_calls
+                elif hasattr(message, 'function_call') and message.function_call:
+                    has_tool_calls = True
+                    # Convert old format to new format
+                    tool_calls = [{
+                        "id": "call_" + str(len(self.message_history)),
+                        "function": {
+                            "name": message.function_call.name,
+                            "arguments": message.function_call.arguments
+                        }
+                    }]
+                
+                if has_tool_calls:
                     # Process each tool call
-                    for tool_call in message.tool_calls:
-                        function_name = tool_call.function.name
-                        function_args = json.loads(tool_call.function.arguments)
+                    for tool_call in tool_calls:
+                        # Extract function name and arguments based on API version
+                        if hasattr(tool_call, 'function'):
+                            function_name = tool_call.function.name
+                            function_args = json.loads(tool_call.function.arguments)
+                            tool_call_id = tool_call.id
+                        else:
+                            function_name = tool_call["function"]["name"]
+                            function_args = json.loads(tool_call["function"]["arguments"])
+                            tool_call_id = tool_call["id"]
                         
                         logger.info(f"Tool call requested: {function_name}")
                         print(f"\nCalling tool: {function_name}")
@@ -223,7 +278,7 @@ class MCP_ChatBot:
                             # Add tool result to history
                             self.message_history.append({
                                 "role": "tool",
-                                "tool_call_id": tool_call.id,
+                                "tool_call_id": tool_call_id,
                                 "name": function_name,
                                 "content": error_msg
                             })
@@ -237,7 +292,7 @@ class MCP_ChatBot:
                             # Add tool result to history
                             tool_result = {
                                 "role": "tool",
-                                "tool_call_id": tool_call.id,
+                                "tool_call_id": tool_call_id,
                                 "name": function_name,
                                 "content": result.content
                             }
@@ -253,7 +308,7 @@ class MCP_ChatBot:
                             # Add error message as tool result
                             self.message_history.append({
                                 "role": "tool",
-                                "tool_call_id": tool_call.id,
+                                "tool_call_id": tool_call_id,
                                 "name": function_name,
                                 "content": f"Error: {str(e)}"
                             })
@@ -262,7 +317,8 @@ class MCP_ChatBot:
                     continue
                 else:
                     # No tool calls, just print the response
-                    print(f"\nAssistant: {message.content}")
+                    content = message.content if hasattr(message, 'content') else message["content"]
+                    print(f"\nAssistant: {content}")
                     break
                     
             except Exception as e:

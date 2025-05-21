@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Research Chatbot</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/json.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css" id="code-theme">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github-dark.min.css" id="code-theme-dark" disabled>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+    <header class="p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">MCP Research Chatbot</h1>
+            <div class="flex space-x-2">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon-dark hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <button id="helpBtn" class="px-4 py-2 rounded-md">
+                    <i class="fas fa-question-circle mr-2"></i>Help
+                </button>
+                <button id="clearBtn" class="px-4 py-2 rounded-md">
+                    <i class="fas fa-trash-alt mr-2"></i>Clear Chat
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar -->
+        <div id="sidebar" class="w-64 shadow-md p-4 flex flex-col">
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold mb-2">Available Tools</h2>
+                <div id="toolsList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
+            </div>
+            <div class="mb-4">
+                <h2 class="text-lg font-semibold mb-2">Available Prompts</h2>
+                <div id="promptsList" class="space-y-2 max-h-40 overflow-y-auto text-sm"></div>
+            </div>
+            <div class="mt-auto">
+                <h2 class="text-lg font-semibold mb-2">Quick Commands</h2>
+                <div class="space-y-2 text-sm">
+                    <div class="p-2 rounded hover:bg-gray-200 cursor-pointer command-item" data-command="@folders">
+                        @folders - List paper topics
+                    </div>
+                    <div class="p-2 rounded hover:bg-gray-200 cursor-pointer command-item" data-command="/prompts">
+                        /prompts - List available prompts
+                    </div>
+                    <div class="p-2 rounded hover:bg-gray-200 cursor-pointer command-item" data-command="/clear">
+                        /clear - Clear conversation
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="flex-1 flex flex-col">
+            <div id="chatContainer" class="flex-1 p-4 overflow-y-auto">
+                <div id="messages" class="space-y-4"></div>
+            </div>
+            
+            <div class="p-4 border-t">
+                <form id="messageForm" class="flex items-center">
+                    <input 
+                        id="messageInput" 
+                        type="text" 
+                        placeholder="Type your message or command (e.g., @folders, /prompts)..." 
+                        class="flex-1 p-3 border rounded-l-md focus:outline-none focus:ring-2"
+                    >
+                    <button type="submit" class="p-3 rounded-r-md">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">MCP Chatbot Help</h2>
+                <button id="closeHelpBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <h3 class="font-semibold text-lg">Basic Commands</h3>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>@folders</code> - List all available paper topics</li>
+                        <li><code>@&lt;topic&gt;</code> - View papers for a specific topic</li>
+                        <li><code>/prompts</code> - List all available prompts</li>
+                        <li><code>/prompt &lt;name&gt; &lt;arg1=value1&gt;</code> - Execute a specific prompt</li>
+                        <li><code>/clear</code> - Clear conversation history</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg">Example Queries</h3>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>"Search for papers about machine learning"</li>
+                        <li>"What are the latest papers on climate change?"</li>
+                        <li>"Can you summarize the paper with ID 2304.12244v1?"</li>
+                        <li>"What tools do you have available?"</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-lg">Tips</h3>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li>Use the sidebar to see available tools and prompts</li>
+                        <li>Click on quick commands in the sidebar to execute them</li>
+                        <li>The chatbot uses GPT-4o to understand your queries</li>
+                        <li>Paper search results are stored for future reference</li>
+                        <li>Toggle between light and dark mode using the theme button</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
